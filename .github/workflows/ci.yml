@@ -17,18 +17,25 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: Ubuntu GCC
+          - name: Ubuntu GCC (Wayland)
             os: ubuntu-latest
             compiler: gcc
+            packages: libwayland-dev
 
-          - name: Ubuntu GCC AARCH64 (native)
-            os: ubuntu-latest
-            arch: arm64
-            compiler: gcc
-
-          - name: Ubuntu Clang
+          - name: Ubuntu Clang (Wayland)
             os: ubuntu-latest
             compiler: clang
+            packages: libwayland-dev
+            
+          - name: Ubuntu GCC (X11)
+            os: ubuntu-latest
+            compiler: gcc
+            packages: libx11-dev
+
+          - name: Ubuntu Clang (X11)
+            os: ubuntu-latest
+            compiler: clang
+            packages: libx11-dev
 
           - name: Windows MSVC Win64
             os: windows-latest

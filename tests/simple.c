@@ -12,6 +12,7 @@ int main() {
         printf("Current time in nanoseconds: %lld\n", ticks);
     } else {
         printf("Failed to get current time.\n");
+        return -1;
     }
 
     return 0;
