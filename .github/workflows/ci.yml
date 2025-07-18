@@ -1,0 +1,86 @@
+name: CI CMake
+on:
+  pull_request:
+  release:
+    types: [published]
+  push:
+    tags:
+    branches:
+      - main
+      - develop
+
+jobs:
+  ci-cmake:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Ubuntu GCC
+            os: ubuntu-latest
+            compiler: gcc
+
+          - name: Ubuntu GCC AARCH64 (native)
+            os: ubuntu-latest
+            arch: arm64
+            compiler: gcc
+
+          - name: Ubuntu Clang
+            os: ubuntu-latest
+            compiler: clang
+
+          - name: Windows MSVC Win64
+            os: windows-latest
+            compiler: cl
+            cmake-args: -A x64
+
+          - name: Windows GCC Ninja
+            os: windows-latest
+            compiler: gcc
+            cmake-args: -G Ninja
+
+          - name: Windows GCC MinGW
+            os: windows-latest
+            compiler: gcc
+            cmake-args:  -G "MinGW Makefiles"
+
+          - name: macOS Clang
+            os: macOS-latest
+            compiler: clang
+
+          - name: macOS GCC
+            os: macOS-latest
+            compiler: gcc
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install packages (Ubuntu)
+      if: runner.os == 'Linux' && matrix.packages
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ${{ matrix.packages }}
+
+    - name: Install packages (Windows)
+      if: runner.os == 'Windows'
+      run: choco install ninja ${{ matrix.packages }}
+
+    - name: Install packages (macOS)
+      if: runner.os == 'macOS'
+      run: brew install ninja ${{ matrix.packages }}
+
+    - name: Generate project files
+      run: cmake -S ${{ matrix.build-src-dir || '.' }} -B ${{ matrix.build-dir || '.' }} ${{ matrix.cmake-args }} -D CMAKE_BUILD_TYPE=${{ matrix.build-config || 'Release' }}
+      env:
+        CC: ${{ matrix.compiler }}
+        CFLAGS: ${{ matrix.cflags }}
+        LDFLAGS: ${{ matrix.ldflags }}
+        CI: true
+
+    - name: Compile source code
+      run: cmake --build ${{ matrix.build-dir || '.' }} --config ${{ matrix.build-config || 'Release' }}
+
+    - name: Run test cases
+      run: ctest -C Release --output-on-failure --max-width 120
+      working-directory: ${{ matrix.build-dir || '.' }}
