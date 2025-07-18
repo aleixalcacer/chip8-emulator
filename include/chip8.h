@@ -10,5 +10,6 @@
 #define CHIP8_SCREEN_WIDTH 64
 #define CHIP8_SCREEN_HEIGHT 32
 
+void say_hello();
 
 #endif // CHIP8_H_
