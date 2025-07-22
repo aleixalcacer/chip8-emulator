@@ -13,7 +13,7 @@ file(GLOB SOURCES "src/*.c")
 # Create a static library (change STATIC to SHARED if you want a dynamic library)
 add_library(chip8 STATIC ${SOURCES})
 
-find_package(SDL3)
+find_package(SDL3 REQUIRED CONFIG)
 
 # Check if SDL3 was found
 if(SDL3_FOUND)

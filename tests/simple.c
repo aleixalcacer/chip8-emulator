@@ -1,5 +1,5 @@
 #include "chip8.h"
-#include "SD3/SDL_time.h"
+#include "SDL3/SDL_time.h"
 
 int main() {
 
