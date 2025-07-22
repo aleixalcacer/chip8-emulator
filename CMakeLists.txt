@@ -7,26 +7,21 @@ project(chip8-emulator VERSION 1.0 LANGUAGES C)
 include_directories("include")
 include_directories("libs/SDL/include")
 
-# Add subdirectory for any additional CMake modules if needed
-set(SDL_STATIC ON)
-set(SDL_SHARED OFF)
-add_subdirectory("libs/SDL")
-
 # Collect all C source files in the src directory
 file(GLOB SOURCES "src/*.c")
 
 # Create a static library (change STATIC to SHARED if you want a dynamic library)
 add_library(chip8 STATIC ${SOURCES})
 
-target_link_libraries(chip8 SDL3-static)
+find_package(SDL3)
 
-# Optionally set the C standard
-set_target_properties(chip8 PROPERTIES
-    C_STANDARD 99
-    C_STANDARD_REQUIRED YES
-)
+# Check if SDL3 was found
+if(SDL3_FOUND)
+    target_link_libraries(chip8 SDL3::SDL3)
+else()
+    message(FATAL_ERROR "SDL3 not found. Please install SDL3 development files.")
+endif()
 
-target_link_libraries(chip8)
 
 # ---------------------
 # Enable and configure testing

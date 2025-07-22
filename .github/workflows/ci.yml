@@ -17,25 +17,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: Ubuntu GCC (Wayland)
+          - name: Ubuntu GCC
             os: ubuntu-latest
             compiler: gcc
-            packages: libwayland-dev
 
-          - name: Ubuntu Clang (Wayland)
+          - name: Ubuntu Clang
             os: ubuntu-latest
             compiler: clang
-            packages: libwayland-dev
-            
-          - name: Ubuntu GCC (X11)
-            os: ubuntu-latest
-            compiler: gcc
-            packages: libx11-dev
-
-          - name: Ubuntu Clang (X11)
-            os: ubuntu-latest
-            compiler: clang
-            packages: libx11-dev
 
           - name: Windows MSVC Win64
             os: windows-latest
@@ -78,6 +66,13 @@ jobs:
     - name: Install packages (macOS)
       if: runner.os == 'macOS'
       run: brew install ninja ${{ matrix.packages }}
+
+    - uses: libsdl-org/setup-sdl@main
+      id: sdl
+      with:
+        install-linux-dependencies: true
+        version: 3-latest
+        version-sdl-image: 3-latest
 
     - name: Generate project files
       run: cmake -S ${{ matrix.build-src-dir || '.' }} -B ${{ matrix.build-dir || '.' }} ${{ matrix.cmake-args }} -D CMAKE_BUILD_TYPE=${{ matrix.build-config || 'Release' }}
