@@ -26,17 +26,17 @@ jobs:
             compiler: clang
 
           - name: Windows MSVC Win64
-            os: windows-latest
+            os: windows-2025
             compiler: cl
             cmake-args: -A x64
 
           - name: Windows GCC Ninja
-            os: windows-latest
+            os: windows-2025
             compiler: gcc
             cmake-args: -G Ninja
 
           - name: Windows GCC MinGW
-            os: windows-latest
+            os: windows-2025
             compiler: gcc
             cmake-args:  -G "MinGW Makefiles"
 
